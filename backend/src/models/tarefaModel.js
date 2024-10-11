@@ -4,13 +4,10 @@ import conn from "../config/conn.js"
 const tarefas = conn.define("tarefas",{
     id:{
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
-        validate:{
-            isUUID: 4
-        }
     },
-    tarefas:{
+    tarefa:{
         type: DataTypes.STRING,
         allowNull: false
 
@@ -21,7 +18,7 @@ const tarefas = conn.define("tarefas",{
     status:{
         type: DataTypes.ENUM,
         values: ["pendente", "concluida"],
-        defaultValue: ["pendente"]
+        defaultValue: "pendente"
     }
 
 })
