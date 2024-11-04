@@ -192,7 +192,7 @@ export const deleteTarefa = async (request, response) => {
         const tarefaDeletada = await Tarefa.destroy({
             where: { id }
         })
-        console.log(tarefaDeletada)
+          console.log(tarefaDeletada)
 
         if (tarefaDeletada === 0) {
             response.status(200).json({ message: "Tarefa não existe" })

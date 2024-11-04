@@ -1,36 +1,39 @@
 import axios from 'axios'
 import React from 'react'
-import { Table } from 'react-bootstrap'
-import { BsFillTrashFill } from "react-icons/bs";
+import { Table, Button } from 'react-bootstrap'
+import EditForm from "./EditForm"
 
-const TodoList = () => {
+const TodoList = ({tarefas, setTarefas}) => {
 
-    const [tarefas, setTarefas] = React.useState([])
+  const [show, setShow] = React.useState(false)
+  const [ondEdit, setOnEdit] = React.useState(null)
 
-    React.useEffect(() => {
+  const handleEdit = (tarefa) =>{
+    setOnEdit(tarefa)
+    setShow(true)
+  }
 
-        const handleGetList = async () => {
-            try {
-                const response = await axios.get("http://localhost:3333/api/tarefas")
-                setTarefas(response.data)
-            } catch{
-                console.log("Não foi possível obter os dados")
-            }
-        }
-
-        handleGetList()
-    }, [])
-
-    const handleDelete = async (id) => {
-        try {
-            await axios.delete(`http://localhost:3333/api/tarefas/${id}`)
-            setTarefas(tarefas.filter((tarefa) => tarefa.id !== id))
-        } catch {
-            console.log("Não foi possível fazer a exclusão")
-        }
+  const handleSubmitEdit = async (editedTarefa) => {
+    try {
+      await axios.put(`http://localhost:3333/tarefas/${editedTarefa.id}`, editedTarefa)
+      setTarefas((prevTarefas) => prevTarefas.map((tarefa) => (tarefa.is === editedTarefa.id ? editedTarefa : tarefa)))
+      setShow(false)
+    } catch (error) {
+      console.error(error)
     }
+  }
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3333/api/tarefas/${id}`)
+      setTarefas(tarefas.filter((tarefa) => tarefa.id !== id))
+    } catch(error) {
+      console.log(error)
+    }
+  }
 
   return (
+    <>
     <Table striped bordered hover>
       <thead>
         <tr>
@@ -46,13 +49,16 @@ const TodoList = () => {
           <td>{tarefa.tarefa}</td>
           <td>{tarefa.descricao}</td>
           <td>{tarefa.status}</td>
-          <td>
-            <span><BsFillTrashFill onClick={() => handleDelete(tarefa.id)} /></span>
+          <td>            
+            <Button variant="warning" onClick={() => handleEdit(tarefa)}>Editar</Button>
+            <Button variant="danger" onClick={()=> handleDelete(tarefa.id)}>Deletar</Button>
           </td>
         </tr>
       </tbody>
       ))}
     </Table>
+    <EditForm show={show} handleClose={()=> setShow(false)} tarefa={ondEdit}/>
+    </>
   );
 }
 

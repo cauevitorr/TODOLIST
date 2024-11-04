@@ -10,7 +10,7 @@ const TodoForm = () => {
     const [loading, setLoading] = React.useState(null)
 
     const handlePost = async (event) => {
-        event.preventDefault()
+
         setLoading("Carregando...")
 
         try {
@@ -20,8 +20,10 @@ const TodoForm = () => {
             })
             setMessage("Tarefa criada com sucesso!")
             setTarefa('')
+            setDescricao('')
         } catch (error) {
             setMessage("Não foi possível salvar a sua tarefa!")
+            console.error(error)
         }
     }
 
